@@ -19,27 +19,25 @@ public class LoginPage {
 	
 	 WebdriverWrapper wd=new WebdriverWrapper();
 
-	public Locator emailId= new Locator("Login email id textbox", "user_txt","id");
-	public Locator password= new Locator("Login password text box", "user_pass","id");
-	public Locator loginBtn= new Locator("Login button", "//button[@value='Submit']//em[contains(.,'Login')]");
-	public Locator rememberMeCheckbox=new Locator("Remember me checkbox","//span[@class='cust_checkbox checkbox cust_checkbox_off']");
+	public Locator emailId= new Locator("Login email id textbox", "txtUser","id");
+	public Locator password= new Locator("Login password text box", "txtPassword","id");
+	public Locator loginBtn= new Locator("Login button", "Submit","id");
+	//public Locator rememberMeCheckbox=new Locator("Remember me checkbox","//span[@class='cust_checkbox checkbox cust_checkbox_off']");
 	
-	public void loginToITSPortal(String emaild, String pwd){
+	public void loginToNocPortal(String emaild, String pwd){
 	
 		
     Reporter.log("Enter login credentials  to ITS portal");
+    
 	    wd.waitForElementToBeClickable(emailId,3000);
 		wd.clearandSendKeys(emaild, emailId);
 		wd.clearandSendKeys(pwd, password);
-		wd.changeCheckboxStatus( rememberMeCheckbox,"check");
+
 		wd.clickElement(loginBtn);
-		 if(wd.isAlertPresent())
-			    wd.acceptAlert();
-		
-			 wd.clearandSendKeys(emaild, emailId);
-			 wd.clearandSendKeys(pwd, password);
-   			wd.clickElement(loginBtn);
-	  
+		wd.waitFor(3000);
+   
+    	
+
 				
 	}
 
@@ -52,5 +50,19 @@ public class LoginPage {
 	if(conn!=null)
 		System.out.println("Database connection made");
 	}
+
+	public void openApplication() {
+		String url=null;
+		if(Utilities.getMavenProperties("Environment").equalsIgnoreCase("DT"))
+		{
+			url=Utilities.getMavenProperties("NOC_DTapplicationUrl");
+		}
+		else
+			{url=Utilities.getMavenProperties("NOC_PREapplicationUrl");}
+		wd.openApplication(url);
+		
+	}
+	
+
 
 }

@@ -13,5 +13,7 @@ public class PageFactory {
 	public LoginPage loginPage=new LoginPage();
 	
 	public HomePage homePage=new HomePage();
-
+	public DBConnection dbConnectionPage=new DBConnection();
+	public NOCGenerateTicketPage nocTicketPage=new NOCGenerateTicketPage();
+    public ConnectwisePage connectwisePage= new ConnectwisePage();
 }

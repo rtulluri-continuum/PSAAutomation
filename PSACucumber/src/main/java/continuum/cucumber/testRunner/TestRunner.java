@@ -34,7 +34,7 @@ plugin = {
 "html:test-report/cucumber",
 "json:test-report/cucumber.json",
 "rerun:target/rerun.txt" },
-tags = {"@SmokeTest"}
+tags = {"@PSATest"}
 )
 public class TestRunner extends AbstractTestNGCucumberTests
 {
