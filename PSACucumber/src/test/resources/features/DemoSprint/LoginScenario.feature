@@ -9,6 +9,6 @@ Scenario Outline: Verify authorized login
  Then Verify user is login to NOC portal
  And Verify user is able to logout
  Examples: 
- |      EmailId                |  Password  |TestCaseId|SheetName      |Environment|
- | automationBDD@continuum.net |  Abc@12345 | 12345    |DemoSprint.xlsx|DT|
-  | sandeep.kale@dtsdm1.net     |  Abc@12345 |12345    |DemoSprint.xlsx|DT|
+ |      EmailId    |Password  |Environment|
+ | user_sdm        |  sdm#1234 |DT  |
+  |user_sdm        |  sdm#1234 |PRE |

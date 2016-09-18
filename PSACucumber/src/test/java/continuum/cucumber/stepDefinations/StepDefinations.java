@@ -12,8 +12,9 @@ import org.testng.Reporter;
 import continuum.cucumber.DatabaseUtility;
 import continuum.cucumber.DriverFactory;
 import continuum.cucumber.Utilities;
+import continuum.cucumber.WebDriverInitialization;
 import continuum.cucumber.Page.DBConnection;
-import continuum.cucumber.Page.LoginPage;
+
 import continuum.cucumber.Page.PageFactory;
 
 import cucumber.api.DataTable;
@@ -30,24 +31,30 @@ public class StepDefinations extends PageFactory {
 	
 	
 	
-	@Given("^User is able to login to NOC portal with \"([^\"]*)\", \"([^\"]*)\" and \"([^\"]*)\"$")
-	public void user_is_able_to_login_to_NOC_portal(String emailId,String pwd,String env) throws Throwable {
-		if(Utilities.getMavenProperties("Environment").equalsIgnoreCase(env)){
-			loginPage.openApplication();;
-		    loginPage.loginToNocPortal(emailId, pwd);
-		}
-		else
-		{
-			System.out.println("******WRONG ENVIRONMENT*********");
-			throw new PendingException();
-		}
+	
+	@Given("^User is login to Connectwise portal$")
+	public void user_is_login_to_ConnectWise_portal() throws Throwable {
+		Reporter.log("Log in to connectwise application");	
+     connectwisePage.loginToconnectwise(Utilities.getMavenProperties("Connectwise_Company"),Utilities.getMavenProperties("Connectwise_UserName"),Utilities.getMavenProperties("Connectwise_Password"));
+
+
 	}
+
+	@Given("^User is login to NOC portal$")
+	public void user_is_login_to_NOC_portal() throws Throwable {
+	
+		Reporter.log("Log in to NOC application");	
+		nocHomePage.loginToNocPortal(Utilities.getMavenProperties("NOC_UserName"),Utilities.getMavenProperties("NOC_Password"));
+		nocHomePage.closePopup();
+	}
+	
+
 
 	@When("^User is able to create ticket in NOC portal for \"([^\"]*)\", \"([^\"]*)\",\"([^\"]*)\" with status in \"([^\"]*)\"$")
 	public void user_is_able_to_create_ticket_in_NOC_portal_for_with_status_in(String member, String site, String resource, String datasheet) throws Throwable {
-      homePage.closePopup();
+      nocHomePage.closePopup();
       
-      homePage.gotToGenerateTicket();
+      nocHomePage.gotToGenerateTicket();
      nocTicket=nocTicketPage.createTicket(member,site,resource,datasheet);
       
 	}
@@ -55,22 +62,56 @@ public class StepDefinations extends PageFactory {
 	@Then("^Veirfy ticket created in Database$")
 	public void veirfy_ticket_created_in_Database() throws Throwable {
 	   Reporter.log("Verify ticket created in database");
-	 // connectwiseTicket=nocTicketPage.getConnectwiseTicketNoFromDB(nocTicket);
+	  connectwiseTicket=nocTicketPage.getConnectwiseTicketNoFromDB(nocTicket);
 
 	}
+	
+	
+	
+	
 
-	@Then("^Verify same ticket is created in PSA-ConnectWise$")
-	public void verify_same_ticket_is_created_in_PSA_ConnectWise() throws Throwable {
-		Reporter.log("Verify ticket in PSA connectwise");
-		connectwisePage.openConnectwiseApplication();
-		connectwisePage.loginToconnectwise();
+
+	@When("^User is able to create ticket in ConnectWise portal for \"([^\"]*)\", \"([^\"]*)\"$")
+	public void user_is_able_to_create_ticket_in_ConnectWise_portal_for_with_status_in(String company, String board) throws Throwable {
+	      connectwisePage.gotToServiceTicket();
+		  connectwiseTicket=connectwisePage.createTicket(company, board);
+		  Reporter.log("Connectwise ticketid : "+connectwiseTicket);
+		  System.out.println("Connectwise ticketid : "+connectwiseTicket);
 	}
 
-	@Then("^Verify status is updated accodring to status mapped in sheet \"([^\"]*)\"$")
-	public void verify_status_is_updated_accodring_to_status_mapped_in_sheet(String arg1) throws Throwable {
-		Reporter.log("Verify ticket status updated");
-		connectwisePage.closeApplication();
+	@Then("^Verify ticket created in PSA Database$")
+	public void veirfy_ticket_created_in_PSA_Database() throws Throwable {
+//		Reporter.log("Verify ticket created in database");
+//		 nocTicket=connectwisePage.getNocTicketNoFromDB(connectwiseTicket);
 	}
+
+
+
+@Then("^Verify same ticket is created in NOC$")
+public void verify_same_ticket_is_created_in_NOC() throws Throwable {
+	nocHomePage.loginToNocPortal(Utilities.getMavenProperties("NOC_UserName"),Utilities.getMavenProperties("NOC_Password"));
+	nocHomePage.closePopup();
+	nocHomePage.goToQuickReports();
+	 nocTicket="201609140000034";
+	nocHomePage.verifyTicketonNoc(nocTicket);
+}
+
+@When("^Update ticket status on Connectwise portal \"([^\"]*)\"$")
+public void update_ticket_status_on_Connectwise_portal(String connectwiseStatus ) throws Throwable {
+	connectwiseTicket="25743";
+    connectwisePage.updateStatusinConnectwise(connectwiseTicket,connectwiseStatus);
+}
+
+@Then("^Verify corresponding status is updated on NOC portal \"([^\"]*)\"$")
+public void verify_corresponding_status_is_updated_on_NOC_portal(String nocStatus) throws Throwable {
+
+	 nocTicket="201609140000034";
+    System.out.println("NOC status: "+nocStatus);
+    nocHomePage.verifyStatusOnNOC(nocTicket,nocStatus);
+}
+
+
+
 
 	
 

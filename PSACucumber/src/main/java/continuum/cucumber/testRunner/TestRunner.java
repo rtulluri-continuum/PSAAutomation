@@ -23,8 +23,6 @@ import cucumber.api.testng.TestNGCucumberRunner;
 
 
 
-
-
 @RunWith(Cucumber.class)
 @CucumberOptions(
 features = "src//test//resources//features//DemoSprint",
