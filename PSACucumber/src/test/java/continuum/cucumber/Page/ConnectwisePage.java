@@ -31,7 +31,7 @@ public class ConnectwisePage {
 	public Locator notesTextArea=new Locator("notes text area","//div[contains(@class,'mm_textArea')]/textarea");
 	public Locator saveBtn=new Locator("save btn","//div[contains(@class,'cw_ToolbarButton_Save')]//div[contains(@class,'mm_buttonIcon')]");
 	//public Locator notesPopup=new Locator("notes popup","//div[contains(@class,'cw-gxt-wnd')]");
-	public Locator closeNotesPopup=new Locator("close btn on notes poup","//div[contains(@class,'mm_button')]//div[contains(@class,'Close')]");
+	public Locator closeNotesPopup=new Locator("close btn on notes poup","//div[contains(@class,'cw-gxt-wnd')]//img[contains(@class,'gwt-Image cw-gxt-wnd-cls')]");
 	public Locator ticketId=new Locator("ticket id","//div[contains(@class,'detailLabel cw_CwLabel')]");
 	public Locator ticketSearchBox=new Locator("ticket search box","//input[contains(@id,'SR_Service_RecID-input')]");
 	public Locator ticketSearchBtn=new Locator("ticket search btn","//div[contains(@class,'mm_button')]//div[contains(text(),'Search')]");
@@ -75,7 +75,7 @@ public class ConnectwisePage {
 		wd.waitFor(30000);
 		wd.waitForElementToInvisible(loadingIcon,60000);
 		wd.waitForElementToInvisible(pageLoadingIcon,60000);
-		wd.waitFor(3000);
+		wd.waitFor(30000);
 		wd.waitForPageLoad();
 	}
 
@@ -147,13 +147,13 @@ public class ConnectwisePage {
 
 	public void updateStatusinConnectwise(String connectwiseTicket,String connectwiseStatus) {
 		wd.switchDriver(DriverFactory.getDriver());
-		wd.waitFor(2000);
+		wd.waitFor(3000);
 		wd.clickElement(serviceTicketTab);
 		wd.waitFor(1000);
 		wd.bringElementInView(serviceTicketSearch);
 		wd.waitFor(2000);
 		wd.clickElement(serviceTicketSearch);
-		wd.waitFor(4000);
+		wd.waitFor(5000);
 		wd.clearandSendKeys(connectwiseTicket, ticketSearchBox);
 		wd.clickElement(ticketSearchBtn);
 		wd.waitFor(5000);

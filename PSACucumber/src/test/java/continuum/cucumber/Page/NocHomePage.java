@@ -25,8 +25,10 @@ public class NocHomePage {
 	public Locator generateTicket=new Locator("Generate New ticket btn","//table[@class='dmSubmenu']//table[@id='dm0m6i2td']//td[contains(text(),' Generate New Ticket ')]");
 	public Locator management= new Locator("Management dropdown", ".//*[@id='dm0m0i8tdT']/div");
 	public Locator quickreports= new Locator("Quick reports", "//table[@id='dm0m0i5it']//td[@id='dm0m0i5tdT']/div");
-	public Locator ticketreport=new Locator("Ticket Report link","//table[@class='dmSubmenu']//td[contains(text(),'Ticket Report ')]");
+	public Locator ticketreport=new Locator("Ticket Report link","//table[@class='dmSubmenu']//td[@id='dm0m30i0tdT']");
 	public Locator ticketidbox=new Locator("Ticket Id input box","//td[8]//input");
+	public Locator ticketStatus=new Locator("Ticket status","//");
+	public Locator ticketLink=new Locator("Ticket link","//a[@title='View Ticket']");
 	public Locator view=new Locator("View Button","Button1","id");
 	public Locator FrameName=new Locator("Click on Frame","frameTaskComments","Name");
 	public Locator NewLink=new Locator("New Link","//tr[2]/td//tr[2]/td[1]//td[1]/a");
@@ -102,17 +104,35 @@ public class NocHomePage {
 		}
 
 		public void goToQuickReports() {
-			wd.clickElement(quickreports);
-	    	wd.clickElement(ticketreport);
+			wd.waitFor(2000);
+//			wd.clickElement(quickreports);
+//			wd.waitFor(500);
+//	    	wd.mouseHover(ticketreport);
+//	    	wd.clickElement(ticketreport);
+			wd.mouseHoverAndClick(quickreports);
+			wd.waitFor(1000);
+			wd.clickElement(ticketreport);
+			wd.waitFor(1000);
 	    	wd.switchToNewWindow();
-	    	wd.waitFor(2000);
+	    	wd.waitFor(3000);
 	    	
 		}
 		
 		public void verifyTicketonNoc(String ticketId)
 		{
-			wd.waitFor(2000);
+			wd.waitFor(5000);
 	    	wd.sendKeys(ticketId, ticketidbox);
+	        Assert.assertEquals(wd.findElementPresent(ticketLink),true,"Ticket is present on NOC");
+	      
+	        	
+	       
+			
+		}
+
+		public void verifyStatusOnNOC(String nocTicket,String nocStatus) {
+			wd.switchDriver(DriverFactory.getDriver2());
+			wd.waitFor(5000);
+			wd.sendKeys(nocTicket, ticketidbox);
 	        wd.clickElement(view);
 	        wd.waitFor(2000);
 	        wd.switchToFrame(FrameName);
@@ -121,23 +141,26 @@ public class NocHomePage {
 	        wd.waitImplicit(3000);
 	        wd.switchToNewWindow();
 	        wd.waitFor(2000);
-	        wd.clickElement(clickChkbox);
+	        wd.clickElement(ticketLink);
 	        wd.waitFor(2000);
-	        wd.clickElement(clickSubmit);
+	        wd.switchToNewWindow();
+	      //  wd.clickElement(clickChkbox);
+	        wd.waitFor(2000);
+	        //wd.clickElement(clickSubmit);
 	        wd.dismissAlert(3000);
-			
-		}
-
-		public void verifyStatusOnNOC(String nocTicket,String nocStatus) {
-			wd.switchDriver(DriverFactory.getDriver2());
-			wd.waitFor(2000);
-
-	        wd.waitFor(2000);
-	        wd.clickElement(clickChkbox);
-	        wd.waitFor(2000);
-	        wd.clickElement(clickSubmit);
-	        wd.dismissAlert(3000);
-			
+	        String ticket_status=wd.getText(ticketStatus);
+	        if(nocStatus.contains(","))
+	        {
+	        	String[] status=Utilities.splitString(nocStatus);
+	        	if(status[0].equalsIgnoreCase(ticket_status) ||status[1].equalsIgnoreCase(ticket_status) )
+	        	    Reporter.log("Ticket Status is correctly updated on NOC");
+	        	else
+	        		Assert.fail("Ticket Status is not correctly updated on NOC");
+	        }
+	        else
+			{
+	        	Assert.assertEquals(ticket_status, nocStatus,"Ticket Status is correctly updated on NOC");
+			}
 		}
 
 }

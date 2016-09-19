@@ -35,7 +35,7 @@ public class StepDefinations extends PageFactory {
 	@Given("^User is login to Connectwise portal$")
 	public void user_is_login_to_ConnectWise_portal() throws Throwable {
 		Reporter.log("Log in to connectwise application");	
-     connectwisePage.loginToconnectwise(Utilities.getMavenProperties("Connectwise_Company"),Utilities.getMavenProperties("Connectwise_UserName"),Utilities.getMavenProperties("Connectwise_Password"));
+        connectwisePage.loginToconnectwise(Utilities.getMavenProperties("Connectwise_Company"),Utilities.getMavenProperties("Connectwise_UserName"),Utilities.getMavenProperties("Connectwise_Password"));
 
 
 	}
@@ -81,8 +81,8 @@ public class StepDefinations extends PageFactory {
 
 	@Then("^Verify ticket created in PSA Database$")
 	public void veirfy_ticket_created_in_PSA_Database() throws Throwable {
-//		Reporter.log("Verify ticket created in database");
-//		 nocTicket=connectwisePage.getNocTicketNoFromDB(connectwiseTicket);
+		Reporter.log("Verify ticket created in database");
+		 nocTicket=connectwisePage.getNocTicketNoFromDB(connectwiseTicket);
 	}
 
 
@@ -90,15 +90,15 @@ public class StepDefinations extends PageFactory {
 @Then("^Verify same ticket is created in NOC$")
 public void verify_same_ticket_is_created_in_NOC() throws Throwable {
 	nocHomePage.loginToNocPortal(Utilities.getMavenProperties("NOC_UserName"),Utilities.getMavenProperties("NOC_Password"));
-	nocHomePage.closePopup();
+//	nocHomePage.closePopup();
 	nocHomePage.goToQuickReports();
-	 nocTicket="201609140000034";
+	 nocTicket="201609180000791";
 	nocHomePage.verifyTicketonNoc(nocTicket);
 }
 
 @When("^Update ticket status on Connectwise portal \"([^\"]*)\"$")
 public void update_ticket_status_on_Connectwise_portal(String connectwiseStatus ) throws Throwable {
-	connectwiseTicket="25743";
+	connectwiseTicket="27616";
     connectwisePage.updateStatusinConnectwise(connectwiseTicket,connectwiseStatus);
 }
 

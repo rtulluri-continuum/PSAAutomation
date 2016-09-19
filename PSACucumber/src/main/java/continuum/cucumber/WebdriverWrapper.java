@@ -429,7 +429,7 @@ public class WebdriverWrapper {
 		// Switch to new window opened
 		Set<String> winHandles = driver.getWindowHandles();
 		driver.switchTo().window((String) winHandles.toArray()[winHandles.size() - 1]);
-		driver.manage().window().maximize();
+
         waitFor(2000);
 		
 	}

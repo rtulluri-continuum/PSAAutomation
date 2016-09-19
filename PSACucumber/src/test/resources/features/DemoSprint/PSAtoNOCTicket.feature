@@ -6,6 +6,7 @@ Scenario Outline: As an MSP, I want to assign tickets to NOC from Connectwise PS
 Given User is login to Connectwise portal
 When  User is able to create ticket in ConnectWise portal for "<Company>", "<Board>"
 Then Verify ticket created in PSA Database 
+And User is login to NOC portal 
 And Verify same ticket is created in NOC
  
   
