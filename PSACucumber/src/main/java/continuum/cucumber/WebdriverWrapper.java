@@ -65,7 +65,7 @@ public class WebdriverWrapper {
 		 Reporter.log("Opening new application with url"+url+" for browser "+browserName);
 		 driver2=WebDriverInitialization.createInstance((RemoteWebDriver) driver2,browserName);
 		 DriverFactory.setWebDriver2(driver2);
-	     driver2.manage().window().maximize();  
+	    
 		 driver2.get(url);
 		 return driver2;
 	  }

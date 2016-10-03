@@ -51,10 +51,9 @@ public class WebDriverInitialization {
     		capabilities.setCapability(CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR, org.openqa.selenium.UnexpectedAlertBehaviour.DISMISS);
     	    capabilities.setCapability("ignoreProtectedModeSettings", true);
     	    
-    		//capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true); 
+    		capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true); 
     		
-    		capabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,true);
-    		 File IEDriverLocation = new File("\\drivers\\IEDriverServer.exe");
+    				 File IEDriverLocation = new File("\\drivers\\IEDriverServer.exe");
     			System.setProperty("webdriver.ie.driver", IEDriverLocation.getAbsolutePath());
     		driver = new RemoteWebDriver(new URL(hubURL),capabilities);
     		break;
@@ -84,7 +83,7 @@ public class WebDriverInitialization {
 		
 //		((RemoteWebDriver)driver).setFileDetector(new LocalFileDetector());
 	    driver.manage().window().maximize();
-	
+	  driver.manage().deleteAllCookies();
        return driver;
 
        }

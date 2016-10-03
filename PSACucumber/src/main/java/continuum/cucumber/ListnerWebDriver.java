@@ -19,20 +19,23 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
+import org.testng.ITestContext;
+import org.testng.ITestListener;
 import org.testng.ITestResult;
 import org.testng.Reporter;
 
-
+import continuum.cucumber.testRunner.TestRunner;
 import cucumber.api.Scenario;
 
-	public class ListnerWebDriver implements IInvokedMethodListener {
+	public class ListnerWebDriver implements IInvokedMethodListener{
 		public static String testClassName;
 		public static String testMethodName;
 		public static String resultParameter[],testResultStatus,timeStamp,imagePath;
 		public static String errorMessage,screenShotPath;
 		static RemoteWebDriver driver=null;
-		
-		  public static String filePath = new File("").getAbsolutePath()+"\\target\\surefire-reports\\Screenshots";
+		static String absolutePath=new File("").getAbsolutePath();
+//		 public static File report = new File(absolutePath+"\\test-report\\");
+		  public static String filePath = new File("").getAbsolutePath()+"\\target\\Screenshots";
 			
 		   
 		    
@@ -44,21 +47,21 @@ import cucumber.api.Scenario;
 	        	 driver=WebDriverInitialization.createInstance(driver,browserName);
 	     	 
 	        	   DriverFactory.setWebDriver(driver);
-	     	      // driver.manage().deleteAllCookies();
-	     	     	driver.manage().window().maximize();
-	     	      
+	     	       	driver.manage().window().maximize();
 	     	 
 	        }
 	    }
 	 
 	    @Override
 	    public void afterInvocation(IInvokedMethod method, ITestResult result) {
-	    //	String scenarioName=Hooks.getScenario().getName();
+	    if (method.isTestMethod()) {
+	       
 	    	String testMethodName = result.getInstanceName().toString().trim();
-			String executionTime=String.valueOf(result.getStartMillis()-result.getEndMillis());
+	    //	screenShotPath = imagePath;
+			
 			DateFormat dateFormat = new SimpleDateFormat(
                     "dd_MMM_yyyy__hh_mm_ssaa");
-			String screenShotName = result.getName() + dateFormat.format(new Date())+".jpg";
+			String screenShotName = TestRunner.getScenarioName()+ dateFormat.format(new Date())+".jpg";
 	    	if(result.isSuccess())
 	    		{Reporter.log("*****  " + result.getName() + " test has Passed *****");}
 	    	else 
@@ -71,9 +74,8 @@ import cucumber.api.Scenario;
 	    		else
 	    			takeScreenShot(DriverFactory.getDriver(),screenShotName, testMethodName);
             	
-	    	}
-	    	        if (method.isTestMethod()) {
-	    	        //	String testMethodName = result.getName().toString().trim();
+	    	    }
+	       
 	    	        	int resultStatus = result.getStatus();
 	    	        	if(resultStatus==1){
 	    	        		testResultStatus = "Passed";
@@ -92,7 +94,7 @@ import cucumber.api.Scenario;
 	    		    		{
 	    		    			errorMessage = testError.getMessage();
 	    		    		}
-	    		    		screenShotPath = imagePath;
+	    		    		
 	    	        	}
 	    	        	
 	    	        	Object[] resultParameter = result.getParameters();
@@ -101,22 +103,22 @@ import cucumber.api.Scenario;
 	    	        	for (int i=0;i<String_Array.length;i++) 
 	    	        		String_Array[i]=resultParameter[i].toString();
 	    	        	 
-	    	        	
-		            	
-		            	
-		            	String dbFlag =Utilities.getMavenProperties("dbFlag");
-		            	
-		            	if(dbFlag.equalsIgnoreCase("true"))
-		            	{
-			            	DatabaseUtility updateResultToDB = new DatabaseUtility();
-			        		try {
-								updateResultToDB.resultUpdateToDataBase(testMethodName,testResultStatus,String_Array,executionTime,timeStamp,errorMessage,screenShotPath);
-								
-							} catch (Throwable e) {
-								
-								e.printStackTrace();
-							}
-		            	}
+//	    	        	
+//		            	
+//		            	
+//		            	String dbFlag =Utilities.getMavenProperties("dbFlag");
+//		            	
+//		            	if(dbFlag.equalsIgnoreCase("true"))
+//		            	{
+//			            	DatabaseUtility updateResultToDB = new DatabaseUtility();
+//			        		try {
+//								updateResultToDB.resultUpdateToDataBase(testMethodName,testResultStatus,String_Array,executionTime,timeStamp,errorMessage,screenShotPath);
+//								
+//							} catch (Throwable e) {
+//								
+//								e.printStackTrace();
+//							}
+//		            	}
 		            	
 		            	DriverFactory.getDriver().quit();
 		            	if(!Utilities.getMavenProperties("browser2").isEmpty())
@@ -125,9 +127,12 @@ import cucumber.api.Scenario;
 		                	DriverFactory.getDriver2().quit();
 		            	}
 		                
-		               SeleniumServerUtility.killSeleniumServer();
-		              }
-	    	     //   ReportMail.sendMail();
+		            	GenerateReport.generateReport();
+						sendReport();
+					    SeleniumServerUtility.killSeleniumServer();
+	        }      
+		              
+	    	       
 	    			
 }
 	    
@@ -151,10 +156,10 @@ import cucumber.api.Scenario;
 
 		    				//return screenShotName;
 		    				imagePath = "file:///"+ filePath+"\\"+ screenShotName;
-		    				
+		    				reportlog(imagePath);
 		    				Reporter.log("Screenshot can be found : " + imagePath);
 		    				
-		    				reportlog(imagePath);
+		    				
 		    				
 		    			} catch (Exception e) {
 		    				System.out.println("An exception occured while taking screenshot " + e);
@@ -178,5 +183,25 @@ import cucumber.api.Scenario;
 		    				"<img src=\""+imagePath+"\"alt=\"screenshot Not available\"height=\"400\"width=\"400\"></a>");
 	    	       
 	    	        }
+
+		
+				
+				private void sendReport(){
+					if(Utilities.getMavenProperties("reportMail").equalsIgnoreCase("true"))
+					{
+						String sender=Utilities.getMavenProperties("reportUser");
+						
+						String subject= "Automation Report for " + Utilities.getMavenProperties("ProjectName");
+//						String message="<br> <a target =\"_blank\"href=\""+reportPath+"\">"+
+//					    				"<img src=\""+reportPath+"\"alt=\"screenshot Not available\"height=\"800\"width=\"1200\"></a>"; 
+					     String message="Automation Report for " + Utilities.getMavenProperties("ProjectName");
+						String password=Utilities.getMavenProperties("reportPassword");
+						File cucumberReport=new File(absolutePath+"\\test-report\\"+"cucumber-results-feature-overview.html");
+						String reciever=Utilities.getMavenProperties("reportReciever");
+
+							HtmlEmailSender.sendEmail(sender, password, reciever, subject, message, cucumberReport);
+					
+					}
+				}
 	    		
 	}		

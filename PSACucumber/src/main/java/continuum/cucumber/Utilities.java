@@ -174,7 +174,7 @@ public class Utilities {
 	}
 	
 	public static String[] splitString(String str){
-		String[] value= new String[5];
+		String[] value= null;
 	if(str.contains(";"))
 		value=str.split(";");
 	return value;

@@ -76,7 +76,7 @@ public class ConnectwisePage {
 		wd.waitForElementToInvisible(loadingIcon,60000);
 		wd.waitForElementToInvisible(pageLoadingIcon,60000);
 		wd.waitFor(30000);
-		wd.waitForPageLoad();
+		//wd.waitForPageLoad();
 	}
 
 	public void gotToServiceTicket() {
@@ -106,7 +106,8 @@ public class ConnectwisePage {
 		wd.clickElement(saveBtn);
 		wd.waitFor(6000);
 	//	wd.waitForElementToBeDisplayed(closeNotesPopup,3000);
-		wd.clickElement(closeNotesPopup);
+		if(wd.findElementPresent(closeNotesPopup))
+		           wd.clickElement(closeNotesPopup);
 		String ticketLabel=wd.getText(ticketId);
 		//Service Ticket #26251 - testing ticket
 		int indexTicket=ticketLabel.indexOf("#");
@@ -146,23 +147,26 @@ public class ConnectwisePage {
 
 
 	public void updateStatusinConnectwise(String connectwiseTicket,String connectwiseStatus) {
-		wd.switchDriver(DriverFactory.getDriver());
+		wd.switchDriver(chromeDriver);
 		wd.waitFor(3000);
-		wd.clickElement(serviceTicketTab);
-		wd.waitFor(1000);
+	
+
 		wd.bringElementInView(serviceTicketSearch);
 		wd.waitFor(2000);
 		wd.clickElement(serviceTicketSearch);
-		wd.waitFor(5000);
+		wd.waitFor(3000);
+		if(wd.isAlertPresent())
+		          wd.acceptAlert();
+		wd.waitFor(2000);
 		wd.clearandSendKeys(connectwiseTicket, ticketSearchBox);
 		wd.clickElement(ticketSearchBtn);
 		wd.waitFor(5000);
-	   wd.clickElement(closeNotesPopup);
+	     wd.clickElement(closeNotesPopup);
 		wd.waitFor(3000);
 		wd.clearandSendKeys(connectwiseStatus, statusDropDown);
 		wd.waitFor(2000);
 		wd.clickElement(saveBtn);
-
+		wd.waitFor(2000);
 	}
 
 //

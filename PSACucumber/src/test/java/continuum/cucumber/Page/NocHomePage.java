@@ -3,6 +3,7 @@ package continuum.cucumber.Page;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -28,54 +29,55 @@ public class NocHomePage {
 	public Locator ticketreport=new Locator("Ticket Report link","//table[@class='dmSubmenu']//td[@id='dm0m30i0tdT']");
 	public Locator ticketidbox=new Locator("Ticket Id input box","//td[8]//input");
 	public Locator ticketStatus=new Locator("Ticket status","//");
-	public Locator ticketLink=new Locator("Ticket link","//a[@title='View Ticket']");
+	public Locator ticketLink=new Locator("Ticket link","//table");
 	public Locator view=new Locator("View Button","Button1","id");
 	public Locator FrameName=new Locator("Click on Frame","frameTaskComments","Name");
 	public Locator NewLink=new Locator("New Link","//tr[2]/td//tr[2]/td[1]//td[1]/a");
 	public Locator manualTriag= new Locator("Manual Triage Link", ".//*[@id='dm0m12i0tdT']");
 	public Locator clickChkbox=new Locator("Click on Check box","//html//tr[1]/td/input[1]");
-	public Locator clickSubmit=new Locator("Click on Submit button","buttReadNotes","ID");
+	public Locator clickSubmit=new Locator("Click on Submit button","buttReadNotes","id");
 	public Locator tabManagement=new Locator("Click on Management link","//table//td[2]/div[contains(text(),'Management')]");
     public Locator editUserframe=new Locator("Edit user frame","frmEditUser","id");
-    public Locator emailId= new Locator("Login email id textbox", "txtUser","id");
-	public Locator password= new Locator("Login password text box", "txtPassword","id");
+    public Locator emailId= new Locator("Login email id textbox", "//input[@name='txtUser']");
+	public Locator password= new Locator("Login password text box", "//input[@name='txtPassword']");
 	public Locator loginBtn= new Locator("Login button", "Submit","id");
    
-	static WebDriver ieDriver=null;
+	WebDriver ieDriver=null;
 	static Boolean ieOpen=false;
 	//public Locator rememberMeCheckbox=new Locator("Remember me checkbox","//span[@class='cust_checkbox checkbox cust_checkbox_off']");
 	
-
-	public void loginToNocPortal(String emaild, String pwd){
-		if(ieOpen==false)
-		{
-	     startNOCApplication();
-         wd.switchDriver(DriverFactory.getDriver2());
-         wd.waitFor(3000);
-//		}
-//         if(wd.findElementPresent(loginBtn))
-// 		{
-         Reporter.log("Enter login credentials  to ITS portal");
-        
-	    wd.waitForElementToBeClickable(emailId,3000);
-		wd.clearandSendKeys(emaild, emailId);
-		wd.clearandSendKeys(pwd, password);
-
-		wd.clickElement(loginBtn);
-		wd.waitFor(3000);
-		}		
-         else
-        	 System.out.println("Noc application is already open");
-	}
-
-	
-	public void startNOCApplication(){
+public void startNOCApplication(){
 		
 		String url=Utilities.getMavenProperties("NOC_DTapplicationUrl");
 	    String br=Utilities.getMavenProperties("browser2");
 		ieDriver=wd.openNewWebdriver(ieDriver,br,url);
 		ieOpen=true;
 	}
+
+	public void loginToNocPortal(String emaild, String pwd){
+		if(ieOpen==false)
+		{
+	     startNOCApplication();
+         wd.switchDriver(ieDriver);
+         wd.waitFor(9000);
+		}
+		if(wd.findElementPresent(emailId))
+		{
+         Reporter.log("Enter login credentials  to ITS portal");
+        
+	 	 wd.sendKeys(emaild, emailId);
+		 wd.sendKeys(pwd, password);
+
+		 wd.clickElement(loginBtn);
+		 wd.waitFor(2000);
+		 closePopup();
+		}		
+         else
+        	 System.out.println("Noc application is already open");
+	}
+
+	
+	
 
 	
 	
@@ -122,9 +124,11 @@ public class NocHomePage {
 		{
 			wd.waitFor(5000);
 	    	wd.sendKeys(ticketId, ticketidbox);
+	    	  wd.clickElement(view);
+	    	wd.waitFor(3000);
 	        Assert.assertEquals(wd.findElementPresent(ticketLink),true,"Ticket is present on NOC");
-	      
-	        	
+	        wd.getWebdriver().close();
+	        
 	       
 			
 		}
