@@ -14,8 +14,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
      	<jre.level>1.7</jre.level>
 		<jdk.level>1.7</jdk.level>
-		<cucumber.options> --features //DemoSprint</cucumber.options>
-		<cucumber.options> --tags @PSATest</cucumber.options>
+	
  </properties>
 
   <dependencies>
@@ -142,13 +141,13 @@
           <version>1.1.1</version>
       </dependency>
   
-  <!--<dependency>
+  <dependency>
     <groupId>continuum</groupId>
     <artifactId>cucumber</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <scope>system</scope>
     <systemPath>${project.basedir}/lib/cucumber-0.0.1-SNAPSHOT.jar</systemPath>
-</dependency>-->
+</dependency>
 
    
  <dependency>

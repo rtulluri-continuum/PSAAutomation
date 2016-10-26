@@ -21,14 +21,14 @@ public class SeleniumServerUtility {
 
 	
 	public static void startServer(){
-		String browserExe=Utilities.getMavenProperties("browser").toLowerCase();
+	
 	
 		try 
 		{
 			
 	    if(!getSeleniumServerStatus())	
     	{
-	       System.out.println("Staring selenium server");
+	       System.out.println("Starting selenium server");
 
 	       Runtime.getRuntime().exec("cmd /c java -jar "+serverLocation+" -Dwebdriver.ie.driver="+IEDriverLocation+ " -Dwebdriver.chrome.driver="+ChromeDriverLocation);
 	       	
@@ -60,11 +60,11 @@ public class SeleniumServerUtility {
 
 			  } catch (ClientProtocolException e) {
 
-			  System.out.println("Selenium server is not started yet");
+			//  System.out.println("Selenium server is not started yet");
 
 			  } catch (IOException e) {
 
-				  System.out.println("Selenium server is not started yet");
+				//  System.out.println("Selenium server is not started yet");
 			  }
 
 			

@@ -29,6 +29,7 @@ public class NOCGenerateTicketPage {
 	 
 	public String createTicket(String member, String site, String resource, String datasheet) {
 		String TicketNo=null;
+		
 		wd.waitFor(3000);
 		wd.switchToNewWindow();
 		wd.waitFor(4000);
@@ -50,7 +51,7 @@ public class NOCGenerateTicketPage {
 		wd.getWebdriver().findElement(By.xpath("//input[contains(@value,'"+site+"')]")).click();
 		wd.waitFor(2000);
 		wd.clearandSendKeys("Automation test ticket", subjectTB);
-		wd.clearandSendKeys("Descrotion:automation test ticket", descriptionTB);
+		wd.clearandSendKeys("Descreption:automation test ticket", descriptionTB);
 		wd.clearandSendKeys("99", priority);
 //		wd.waitForOptionToBePresentInList(resourceDropdown, resource, 4000);
 //		wd.selectByValueFromDropDown(resourceDropdown,resource);

@@ -52,6 +52,8 @@ import javax.mail.BodyPart;
 
 	import continuum.cucumber.Utilities;
 	public class HtmlEmailSender {
+		
+		static String absolutePath=new File("").getAbsolutePath();
 		 
 	    public static void sendEmail(final String userName, final String password, String reciever,
 	            String subject, String message, File report)
@@ -64,25 +66,25 @@ import javax.mail.BodyPart;
 	        properties.setProperty("mail.smtp.auth", "true");
 	        
 	        properties.setProperty("mail.smtp.starttls.enable", "true");
-	        properties.setProperty("mail.smtp.EnableSSL.enable","true");
-	        properties.setProperty("mail.smtp.ssl.trust",Utilities.getMavenProperties("emailHost"));
-	    	
-
+	     //   properties.setProperty("mail.smtp.EnableSSL.enable","true");
+	       //oo properties.setProperty("mail.smtp.ssl.trust",Utilities.getMavenProperties("emailHost"));
+	      
+	        Session session = Session.getInstance(properties,
+	        		new javax.mail.Authenticator() {
+	        		protected PasswordAuthentication getPasswordAuthentication() {
+	        		return new PasswordAuthentication(userName, password);
+	        		}
+	        		});
 	       
-	        // creates a new session with an authenticator
-	        Authenticator auth = new Authenticator() {
-	            public PasswordAuthentication getPasswordAuthentication() {
-	                return new PasswordAuthentication(userName, password);
-	            }
-	        };
-	        
-//	        Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
-//				protected PasswordAuthentication getPasswordAuthentication() {
-//					return new PasswordAuthentication(userName, password);
-//				}
-//			});
-	 
-	       Session session = Session.getInstance(properties, auth);
+//	        // creates a new session with an authenticator
+//	        Authenticator auth = new Authenticator() {
+//	            public PasswordAuthentication getPasswordAuthentication() {
+//	                return new PasswordAuthentication(userName, password);
+//	            }
+//	        };
+//	        
+//	 
+//	       Session session = Session.getInstance(properties, auth);
 	 
 	        // creates a new e-mail message
 	        Message msg = new MimeMessage(session);
@@ -91,33 +93,17 @@ import javax.mail.BodyPart;
 	      
 			msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(reciever));
 			
-//			if(reciever.contains(";"))
-//			{
-//				 
-//		          String []reciverArray=Utilities.splitString(reciever);
-//		          Address[] toAddresses={new InternetAddress()};
-//		          for(int i=0;i<reciverArray.length-1;i++)
-//		          {
-//		        	     toAddresses[i]=new InternetAddress(reciverArray[i]);
-//		          }
-//		                 msg.setRecipients(Message.RecipientType.TO,toAddresses);
-//			}   
-//		          
-//		    else
-//		          {  
-//	                 InternetAddress[] toAddress = { new InternetAddress(reciever)};
-//	                 msg.setRecipients(Message.RecipientType.TO, toAddress);
-//		          }
+
 	        msg.setSubject(subject);
 	        msg.setSentDate(new Date());
 	       
 	 
 	        addReportToMailBody(msg, report);
 	        Transport.send(msg);
-	 
+	   System.out.println("********Sending report mail**********");
 
 			} catch (MessagingException e) {
-				throw new SkipException("Unable to Send Email : " + e.getMessage());
+				System.out.println("****************Unable to Send Email : " + e.getMessage());
 			}
 			
 		}
@@ -132,6 +118,24 @@ import javax.mail.BodyPart;
 	   			e.printStackTrace();
 	   		}
 	   	 }
+	    
+	    
+	    public static void sendReport(){
+			if(Utilities.getMavenProperties("reportMail").equalsIgnoreCase("true"))
+			{
+				String sender=Utilities.getMavenProperties("reportUser");
+				
+				String subject= "Automation Report for " + Utilities.getMavenProperties("ProjectName");
+//				
+			     String message="Automation Report for " + Utilities.getMavenProperties("ProjectName");
+				String password=Utilities.getMavenProperties("reportPassword");
+				File cucumberReport=new File(absolutePath+"\\test-report\\"+"cucumber-results-feature-overview.html");
+				String reciever=Utilities.getMavenProperties("reportReciever");
+
+				sendEmail(sender, password, reciever, subject, message, cucumberReport);
+			
+			}
+		}
 }
 
 			

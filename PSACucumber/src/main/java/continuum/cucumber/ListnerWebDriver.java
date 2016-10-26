@@ -21,124 +21,73 @@ import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
+import org.testng.ITestNGListener;
 import org.testng.ITestResult;
 import org.testng.Reporter;
 
 import continuum.cucumber.testRunner.TestRunner;
 import cucumber.api.Scenario;
 
-	public class ListnerWebDriver implements IInvokedMethodListener{
-		public static String testClassName;
-		public static String testMethodName;
+	public class ListnerWebDriver implements ITestListener{
+		
 		public static String resultParameter[],testResultStatus,timeStamp,imagePath;
 		public static String errorMessage,screenShotPath;
 		static RemoteWebDriver driver=null;
-		static String absolutePath=new File("").getAbsolutePath();
+		
 //		 public static File report = new File(absolutePath+"\\test-report\\");
 		  public static String filePath = new File("").getAbsolutePath()+"\\target\\Screenshots";
 			
 		   
-		    
-	    @Override
-	    public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
-	    	SeleniumServerUtility.startServer();
-	    	String browserName= Utilities.getMavenProperties("browser").toUpperCase();
-	    	if (method.isTestMethod()) {
-	        	 driver=WebDriverInitialization.createInstance(driver,browserName);
-	     	 
-	        	   DriverFactory.setWebDriver(driver);
-	     	       	driver.manage().window().maximize();
-	     	 
-	        }
-	    }
-	 
-	    @Override
-	    public void afterInvocation(IInvokedMethod method, ITestResult result) {
-	    if (method.isTestMethod()) {
-	       
-	    	String testMethodName = result.getInstanceName().toString().trim();
-	    //	screenShotPath = imagePath;
-			
-			DateFormat dateFormat = new SimpleDateFormat(
-                    "dd_MMM_yyyy__hh_mm_ssaa");
-			String screenShotName = TestRunner.getScenarioName()+ dateFormat.format(new Date())+".jpg";
-	    	if(result.isSuccess())
-	    		{Reporter.log("*****  " + result.getName() + " test has Passed *****");}
-	    	else 
-	    	{
-	    		if(!Utilities.getMavenProperties("browser2").isEmpty())
-            	{	
-	    		if(!DriverFactory.getDriver2().toString().equals(null))
-	    			takeScreenShot(DriverFactory.getDriver2(),screenShotName, testMethodName);
-            	}
-	    		else
-	    			takeScreenShot(DriverFactory.getDriver(),screenShotName, testMethodName);
-            	
-	    	    }
-	       
-	    	        	int resultStatus = result.getStatus();
-	    	        	if(resultStatus==1){
-	    	        		testResultStatus = "Passed";
-	    	        	}
-	    	        	else
-	    	        	{
-	    	        		testResultStatus = "Failed";
-	    	        	Throwable testError = result.getThrowable();
-	    		    		errorMessage = testError.getMessage();
-	    		    		
-	    		    		int errMessageLength = errorMessage.length();
-	    		    		if(errMessageLength>255){
-	    		    			errorMessage = errorMessage.substring(0, 100);
-	    		    		}
-	    		    		else
-	    		    		{
-	    		    			errorMessage = testError.getMessage();
-	    		    		}
-	    		    		
-	    	        	}
-	    	        	
-	    	        	Object[] resultParameter = result.getParameters();
-	    	        	String String_Array[]=new String[resultParameter.length];
-	    	        	
-	    	        	for (int i=0;i<String_Array.length;i++) 
-	    	        		String_Array[i]=resultParameter[i].toString();
-	    	        	 
-//	    	        	
-//		            	
-//		            	
-//		            	String dbFlag =Utilities.getMavenProperties("dbFlag");
-//		            	
-//		            	if(dbFlag.equalsIgnoreCase("true"))
-//		            	{
-//			            	DatabaseUtility updateResultToDB = new DatabaseUtility();
-//			        		try {
-//								updateResultToDB.resultUpdateToDataBase(testMethodName,testResultStatus,String_Array,executionTime,timeStamp,errorMessage,screenShotPath);
-//								
-//							} catch (Throwable e) {
-//								
-//								e.printStackTrace();
-//							}
-//		            	}
-		            	
-		            	DriverFactory.getDriver().quit();
-		            	if(!Utilities.getMavenProperties("browser2").isEmpty())
-		            	{	
-		                if(!DriverFactory.getDriver2().toString().equals(null))
-		                	DriverFactory.getDriver2().quit();
-		            	}
-		                
-		            	GenerateReport.generateReport();
-						sendReport();
-					    SeleniumServerUtility.killSeleniumServer();
-	        }      
-		              
-	    	       
-	    			
-}
-	    
+			@Override
+			public void onTestStart(ITestResult result) {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void onTestSuccess(ITestResult result) {
+				if(result.isSuccess())
+		    		{Reporter.log("*****  " + result.getName() + " test has Passed *****");}
+				
+			}
+			@Override
+			public void onTestFailure(ITestResult result) {
+				if(!result.isSuccess())
+		    		{
+					         Reporter.log("*****  " + result.getName() + " test has Failed *****");
+					         DateFormat dateFormat = new SimpleDateFormat( "dd_MMM_yyyy__hh_mm_ssaa");
+							String screenShotName = TestRunner.getScenarioName()+ dateFormat.format(new Date())+".jpg";
+							if(DriverFactory.getDriver2()==null)
+		    		  			takeScreenShot(DriverFactory.getDriver(),screenShotName);
+							else
+								takeScreenShot(DriverFactory.getDriver2(),screenShotName);
+	            	
+		    	    }
+				
+			}
+			@Override
+			public void onTestSkipped(ITestResult result) {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void onStart(ITestContext context) {
+				SeleniumServerUtility.startServer();
+			}
+			@Override
+			public void onFinish(ITestContext context) {
+				SeleniumServerUtility.killSeleniumServer();
+				
+			}
+
+
 	    		
 
-				public static void takeScreenShot(WebDriver driver, String screenShotName, String testName) {
+				public static void takeScreenShot(WebDriver driver, String screenShotName) {
 //	    			String jenkins = Utilities.getConfigValues("jenkins");
 //	    			if(jenkins.equalsIgnoreCase("true"))
 //	    			{
@@ -183,25 +132,9 @@ import cucumber.api.Scenario;
 		    				"<img src=\""+imagePath+"\"alt=\"screenshot Not available\"height=\"400\"width=\"400\"></a>");
 	    	       
 	    	        }
-
+			
 		
 				
-				private void sendReport(){
-					if(Utilities.getMavenProperties("reportMail").equalsIgnoreCase("true"))
-					{
-						String sender=Utilities.getMavenProperties("reportUser");
-						
-						String subject= "Automation Report for " + Utilities.getMavenProperties("ProjectName");
-//						String message="<br> <a target =\"_blank\"href=\""+reportPath+"\">"+
-//					    				"<img src=\""+reportPath+"\"alt=\"screenshot Not available\"height=\"800\"width=\"1200\"></a>"; 
-					     String message="Automation Report for " + Utilities.getMavenProperties("ProjectName");
-						String password=Utilities.getMavenProperties("reportPassword");
-						File cucumberReport=new File(absolutePath+"\\test-report\\"+"cucumber-results-feature-overview.html");
-						String reciever=Utilities.getMavenProperties("reportReciever");
-
-							HtmlEmailSender.sendEmail(sender, password, reciever, subject, message, cucumberReport);
-					
-					}
-				}
+				
 	    		
 	}		

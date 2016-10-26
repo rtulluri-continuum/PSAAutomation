@@ -49,7 +49,7 @@ public class NocHomePage {
 public void startNOCApplication(){
 		
 		String url=Utilities.getMavenProperties("NOC_DTapplicationUrl");
-	    String br=Utilities.getMavenProperties("browser2");
+	    String br=Utilities.getMavenProperties("NOCbrowser");
 		ieDriver=wd.openNewWebdriver(ieDriver,br,url);
 		ieOpen=true;
 	}

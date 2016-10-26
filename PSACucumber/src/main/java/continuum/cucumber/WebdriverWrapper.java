@@ -108,6 +108,8 @@ public class WebdriverWrapper {
 			webEle=driver.findElement(By.className(ele));
 		else if(by.equalsIgnoreCase("name"))
 			webEle=driver.findElement(By.name(ele));
+		else if(by.equalsIgnoreCase("partiallink"))
+			webEle=driver.findElement(By.partialLinkText(ele));
 		else if(by.equalsIgnoreCase("link"))
 			webEle=driver.findElement(By.linkText(ele));
 		else if(by.equalsIgnoreCase("xpath"))
@@ -118,7 +120,7 @@ public class WebdriverWrapper {
 			webEle=driver.findElement(By.tagName(ele));
 		if(by.toString().equals(null))
 			webEle=driver.findElement(By.xpath(ele));
-		if(!Utilities.getMavenProperties("browser").equalsIgnoreCase("IE"))
+		if(!Utilities.getMavenProperties("NOCbrowser").equalsIgnoreCase("IE"))
 		{
 			JavascriptExecutor js = (JavascriptExecutor)driver;
 			js.executeScript("arguments[0].setAttribute('style', arguments[1]);",

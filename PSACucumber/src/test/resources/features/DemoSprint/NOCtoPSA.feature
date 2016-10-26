@@ -1,9 +1,12 @@
 Feature: As a user status I want to create ticket on NOC with different status and verify mapped status in PSA-Connectwise
 
-@PSATest3
-Scenario Outline: Verify ticket created in NOc is created in PSA 
 
- Given User is able to login to NOC portal for "<Environment>"
+Background:
+    Given User is login to Connectwise portal
+@PSATest3
+Scenario Outline: Verify ticket created in NOC is created in PSA 
+
+ Given User is login to NOC portal 
  When  User is able to create ticket in NOC portal for "<Member>", "<Site>","<Resource>" with status in "<Datasheet>"
  Then Veirfy ticket created in Database 
  And Verify same ticket is created in PSA-ConnectWise

@@ -38,17 +38,7 @@ public class ConnectwisePage {
 	public Locator loginAccount=new Locator("login account details","//div[contains(@class,'cw_MyAccountButton')]");
 	
    WebDriver chromeDriver=null;
-	//	
-//	public void openConnectwiseApplication() {
-//		// TODO Auto-generated method stub
-//		String br=Utilities.getMavenProperties("browser2");
-//		String url=Utilities.getMavenProperties("ConnectwiseApplicationUrl");
-//		chromeDriver=wd.openNewWebdriver(chromeDriver,br,url);
-//		wd.switchDriver(chromeDriver);
-//		
-//		
-//		
-//	}
+
 	
 
 	
@@ -63,7 +53,7 @@ public class ConnectwisePage {
 		wd.clearandSendKeys(username,userName );
 		wd.clearandSendKeys(password,passwordTB );
 		wd.clickElement(loginBtn);
-		wd.waitForPageLoad();
+
 		waitTillApplicationLoad();
 		}
 	}
